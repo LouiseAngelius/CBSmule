@@ -1,22 +1,18 @@
-const express = require("express");
-const cors = require("cors");
+// Import necessary modules
+const express = require('express');
 
+// Create an Express application
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-    res.send("Hello World");
+// Define a route
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
 });
 
-const server = app.listen(4700, "0.0.0.0", () => {
-    const host = server.address().address;
-    const port = server.address().port;
-    console.log(`Server open on http://${host}:${port}`);
-});
+// Set the port for the server to listen on
+const port = 4700;
 
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
