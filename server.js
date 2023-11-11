@@ -3,12 +3,12 @@ const cors = require("cors");
 
 const app = express();
 
-const pageRoute = require("./index");
+//const pageRoute = require("/script.js");
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/index", pageRoute);
+//app.use("/index", pageRoute);
 
 app.get("/", (req, res) => {
   res.send("CBS mule launcing soon...");
