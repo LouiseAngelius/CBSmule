@@ -1,13 +1,15 @@
 const express = require('express');
-const path = require('path');
 const app = express();
+const path = require('path');
+
 const port = 2000;
 
+app.use(express.static(path.join(__dirname)));
+
 app.get('/', (req, res) => {
-  console.log('Request received for /');
-  res.send('CBS Mule launching soon!');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://0.0.0.0:${port}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
