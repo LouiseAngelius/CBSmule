@@ -1,13 +1,19 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");
+
 const app = express();
-const path = require('path');
 
-const port = 2000;
+const pageRoute = require("./index");
 
-app.get('/', (req, res) => {
-  res.send('CBS Mule launching soon!');
+app.use(cors());
+app.use(express.json());
+
+app.use("/index", pageRoute);
+
+app.get("/", (req, res) => {
+  res.send("CBS mule launcing soon...");
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(2000, () => {
+  console.log("Server open on port 2000");
 });
