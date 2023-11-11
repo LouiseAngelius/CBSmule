@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 });
 
-const server = app.listen(3000, "0.0.0.0", () => {
+const server = app.listen(4700, "0.0.0.0", () => {
     const host = server.address().address;
     const port = server.address().port;
     console.log(`Server open on http://${host}:${port}`);
