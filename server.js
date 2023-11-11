@@ -4,10 +4,8 @@ const path = require('path');
 
 const port = 2000;
 
-app.use(express.static(path.join(__dirname)));
-
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send('CBS Mule launching soon!');
 });
 
 app.listen(port, () => {
