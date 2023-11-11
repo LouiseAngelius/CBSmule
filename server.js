@@ -7,6 +7,7 @@ const app = express();
 
 // Define a route
 app.get('/', (req, res) => {
+  console.log('Request received for /');
   res.send('CBS Mule launching soon!');
 });
 
