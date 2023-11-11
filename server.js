@@ -7,9 +7,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+    res.send("Hello World");
 });
 
-app.listen(8000, () => {
-  console.log("Server open on port 8000");
+const server = app.listen(3000, "64.227.71.105", () => {
+    const host = server.address().address;
+    const port = server.address().port;
+    console.log(`Server open on http://${host}:${port}`);
 });
