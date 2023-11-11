@@ -15,3 +15,8 @@ const server = app.listen(3000, "0.0.0.0", () => {
     const port = server.address().port;
     console.log(`Server open on http://${host}:${port}`);
 });
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
