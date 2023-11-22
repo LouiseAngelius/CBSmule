@@ -9,6 +9,14 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get('/chat', (req, res) => {
+  res.sendFile(__dirname + '/public/chat.html');
+});
+
+app.get('/events', (req, res) => {
+  res.sendFile(__dirname + '/public/events.html');
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
