@@ -1,37 +1,23 @@
+/* public/css/style.css */
 body {
     margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-}
-
-.topbar {
-    background-color: #fff;
-    padding: 15px;
+    font-family: Arial, sans-serif;
+    background-color: #ffe6e6; /* Pink background color */
+  }
+  
+  .topbar {
+    background-color: #fff; /* White top bar */
+    padding: 10px;
     text-align: center;
-}
-
-.topbar a {
-    color: #333;
+  }
+  
+  .topbar a {
+    margin: 0 10px;
     text-decoration: none;
-    margin: 0 15px;
-    font-size: 18px;
-}
-
-.topbar a:hover {
-    color: #ff69b4; /* Pink color on hover */
-}
-
-.content {
+    color: #333;
+  }
+  
+  .content {
+    padding: 20px;
     text-align: center;
-    padding: 50px;
-    background-color: #ff69b4; /* Pink background color */
-    color: #fff;
-}
-
-h1 {
-    font-size: 36px;
-}
-
-p {
-    font-size: 18px;
-}
+  }
