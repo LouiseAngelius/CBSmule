@@ -1,41 +1,39 @@
-const Connection = require("tedious").Connection
-const Request = require("tedious").Request
-
-const config = require("./config.json")
+const { Connection, Request } = require("tedious");
+const config = require("./config.json");
 
 const executeSQL = (query) => {
   return new Promise((resolve, reject) => {
-    const connection = new Connection(config)
-    const request = new Request(query, function (err) {
+    const connection = new Connection(config);
+    const request = new Request(query, (err) => {
       if (err) {
-        reject(err)
+        reject(err);
       }
-    })
+    });
 
-    connection.on("connect", function (err) {
+    connection.on("connect", (err) => {
       if (err) {
-        reject(err)
+        reject(err);
       } else {
-        console.log("Connected to the database")
-        connection.execSql(request)
+        console.log("Connected to the database");
+        connection.execSql(request);
       }
-    })
-    connection.connect()
+    });
+    connection.connect();
 
-    let counter = 1
-    let response = {}
+    let response = {};
 
-    request.on("row", function (columns) {
-      response[counter] = {}
-      columns.forEach(function (column) {
-        response[counter][column.metadata.colName] = column.value
-      })
-      counter += 1
-    })
+    request.on("row", (columns) => {
+      const rowData = {};
+      columns.forEach((column) => {
+        rowData[column.metadata.colName] = column.value;
+      });
+      response[request.rowCount] = rowData;
+    });
+
     request.on("requestCompleted", () => {
-      resolve(response)
-    })
-  })
-}
+      resolve(response);
+    });
+  });
+};
 
-module.exports = { executeSQL }
+module.exports = { executeSQL };
