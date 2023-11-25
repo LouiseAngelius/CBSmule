@@ -42,4 +42,8 @@ app.listen(port, () => {
 
 const authenticate = require("./src/routes/authenticateRoute.js")
 
-app.use("/auth", authenticate)
+app.use("/authenticate", authenticate)
+
+app.use("/create", authenticate)
+
+app.use("/delete", authenticate)

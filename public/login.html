@@ -19,49 +19,43 @@
     <div class="content">
         <h1>Login Page</h1>
         <p>This is the login page content...</p>
-        <a id="logout_button" onclick="logout()" href="login.html" style="text-decoration: none; color: black;">Log ud</a>
-        <div class="profil">
-            <h1>Slet profil</h1>
-            <h3>Hvis du trykker på knappen slettes din profil og alt din data</h3>
-            <button id="delete_button" onclick="deleteUser()">Slet profil</button>
+        <div id="login-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required>
+                <br>
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" required>
+                <br>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required>
+                <br>
+                <button type="button" onclick="login()">Log In</button>
+            </form>
         </div>
-        <div class="loginContainer">
-            <div class="logIn">
-                <h1>Log in</h1>
-                <div>
-                    <form>
-                        <div class="logInEmail">
-                            <label for="email">E-mail:</label>
-                            <input type="email" id="emailOne" placeholder="Skriv e-mail" name="email">
-                        </div>
-                        <div class="logInPassword">
-                            <label for="password">Kodeord:</label>
-                            <input type="password" id="passwordOne" placeholder="Skriv kodeord" name="password">
-                        </div>
-                        <div class="logInButton">
-                            <button type="button" id="log_button" onclick="login()">Log in</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="signUp">
-                <h1>Opret profil</h1>
-                <form>
-                    <div class="navn">
-                        <label for="name">Navn:</label>
-                        <input type="text" class="opret" id="name" placeholder="Skriv navn" name="navn">
-                    </div>
-                    <div class="mail">
-                        <label for="email">E-mail:</label>
-                        <input type="email" class="opret" id="email" placeholder="Skriv e-mail" name="email">
-                    </div>
-                    <div class="kodeord">
-                        <label for="password">Password:</label>
-                        <input type="password" class="opret" id="password" placeholder="Skriv kodeord" name="password">
-                    </div> 
-                    <button type="button" id="save_button" onclick="saveProfileInformationDetails()">Opret profil</button>
-                </form>
-            </div>
+        
+        <div id="signup-container">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <label for="signup-email">Email:</label>
+                <input type="email" id="signup-email" required>
+                <br>
+                <label for="signup-username">Username:</label>
+                <input type="text" id="signup-username" required>
+                <br>
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" required>
+                <br>
+                <button type="button" onclick="signup()">Sign Up</button>
+            </form>
+        </div>
+        
+        <div id="user-actions" style="display: none;">
+            <h2>Welcome, <span id="user-display"></span>!</h2>
+            <button onclick="logout()">Log Out</button>
+            <br>
+            <button onclick="deleteAccount()">Delete Account</button>
         </div>
     </div>
     <script src="../app.js"></script>

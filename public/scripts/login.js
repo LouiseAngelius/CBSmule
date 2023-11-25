@@ -1,85 +1,126 @@
-window.addEventListener("DOMContentLoaded", async () => {
-    async function postData(url = "", data = {}) {
-        const response = await fetch(url, {
-            method: "POST",
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+            return cookie.substring(name.length + 1);
+        }
+    }
+    return '';
+}
+
+function clearCookie(name) {
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+}
+
+function login() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const username = document.getElementById('login-username').value;
+
+    const userData = {
+        email: email,
+        password: password,
+        username: username
+    };
+
+    // Use AJAX to send authentication request to the server
+    fetch('/authenticate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userData: userData })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            const displayName = username || email;
+            document.getElementById('user-display').innerText = displayName;
+            showUserActions();
+
+            // Set a cookie upon successful login
+            setCookie('user', displayName, 1); // Expires in 1 day
+        } else {
+            alert('Authentication failed. Please check your credentials.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+    
+    function signup() {
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const username = document.getElementById('signup-username').value;
+    
+        const userData = {
+            email: email,
+            password: password,
+            username: username
+        };
+    
+        // Use AJAX to send user creation request to the server
+        fetch('/create', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data),
-        });
-        return response.json();
+            body: JSON.stringify({ userData: userData })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                document.getElementById('user-display').innerText = username || email;
+                showUserActions();
+            } else {
+                alert('User creation failed. Please try again.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }
-
-    function saveProfileInformationDetails() {
-        const userData = {
-            username: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-            password: document.getElementById("password").value,
-        };
-        postData("http://localhost:2000/create", { userData })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    document.getElementById("save_button").addEventListener("click", () => {
-        saveProfileInformationDetails();
-    });
-
-    function authenticateUser() {
-        const userData = {
-            email: document.getElementById("emailOne").value,
-            password: document.getElementById("passwordOne").value,
-        };
-        postData("http://localhost:2000/login", { userData })
-            .then((data) => {
-                localStorage.setItem("userID", data);
-                if (localStorage.getItem("userID") !== "false") {
-                    alert("Du er nu logget ind");
-                } else {
-                    alert("Forkert password");
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    document.getElementById("log_button").addEventListener("click", () => {
-        authenticateUser();
-    });
-
+    
     function logout() {
-        localStorage.setItem("userID", false);
+        // Clear the user cookie
+        clearCookie('user');
+        // Implement other logout logic here (e.g., clear session data)
+        hideUserActions();
     }
-
-    document.getElementById("logout_button").addEventListener("click", () => {
-        logout();
-    });
-
-    async function deleteUserFromDB() {
-        const userID = localStorage.getItem("userID");
-        const response = await fetch("http://localhost:2000/login/delete", {
-            method: "DELETE",
+    
+    function deleteAccount() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value;
+    
+        const userData = {
+            email: email,
+            password: password,
+            username: username
+        };
+    
+        // Use AJAX to send user deletion request to the server
+        fetch('/delete', {
+            method: 'DELETE',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ userData: { client_id: userID } }),
-        });
-        const result = await response.json();
-        return result;
-    }
-
-    document.getElementById("delete_button").addEventListener("click", () => {
-        deleteUserFromDB()
-            .then(() => {
-                localStorage.setItem("userID", false);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
-});
+            body: JSON.stringify({ userData: userData })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Account deleted!');
+                hideUserActions();
+            } else {
+                alert('Account deletion failed. Please try again.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    };

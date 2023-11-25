@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authenticate = require("../controllers/authenticate.js");
 
-router.post("/", async (req, res) => {
+router.post("/authenticate", async (req, res) => {
   const result = await authenticate.authenticateUser(req.body.userData);
   res.json(result);
 });
