@@ -6,35 +6,35 @@ const port = 2000;
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '../public/index.html');
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/styles.css');
+  res.sendFile(__dirname + '../public/styles.css');
 });
 
 app.get('/chat', (req, res) => {
-  res.sendFile(__dirname + '/public/chat.html');
+  res.sendFile(__dirname + '../public/chat.html');
 });
 
 app.get('/events', (req, res) => {
-  res.sendFile(__dirname + '/public/events.html');
+  res.sendFile(__dirname + '../public/events.html');
 });
 
 app.get('/friends', (req, res) => {
-  res.sendFile(__dirname + '/public/friends.html');
+  res.sendFile(__dirname + '../public/friends.html');
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/public/login.html');
+  res.sendFile(__dirname + '../public/login.html');
 });
 
 app.get('/news', (req, res) => {
-  res.sendFile(__dirname + '/public/news.html');
+  res.sendFile(__dirname + '../public/news.html');
 });
 
 app.get('/pictures', (req, res) => {
-  res.sendFile(__dirname + '/public/pictures.html');
+  res.sendFile(__dirname + '../public/pictures.html');
 });
 
 app.listen(port, () => {
