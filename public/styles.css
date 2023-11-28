@@ -52,17 +52,3 @@ body {
     border-radius: 4px;
     cursor: pointer;
   }
-
-  .redirect-container {
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  .redirect-button {
-    background-color: #db34ac;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
