@@ -2,7 +2,8 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #ffe6e6; /* Pink background color */
+    background-color: #ffe6f2; /* Pink background color */
+    display: flex;
   }
   
   .topbar {
@@ -20,4 +21,49 @@ body {
   .content {
     padding: 20px;
     text-align: center;
+  }
+
+  #main-container {
+    display: flex;
+  }
+
+  #login-container,
+  #signup-container {
+    max-width: 400px;
+    margin: auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-form-field,
+  .signup-form-field {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .submit-button {
+    background-color: #af4c91;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .redirect-container {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .redirect-button {
+    background-color: #db34ac;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
   }

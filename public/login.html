@@ -16,48 +16,56 @@
         <a href="/pictures">Pictures</a>
         <a href="/news">News</a>
     </div>
-    <div class="content">
-        <h1>Login Page</h1>
-        <p>This is the login page content...</p>
+    
+    <div id="main-container">
         <div id="login-container">
-            <h2>Login</h2>
-            <form id="login-form">
-                <label for="login-email">Email:</label>
-                <input type="email" id="login-email" required>
-                <br>
-                <label for="login-username">Username:</label>
-                <input type="text" id="login-username" required>
-                <br>
-                <label for="login-password">Password:</label>
-                <input type="password" id="login-password" required>
-                <br>
-                <button type="button" onclick="login()">Log In</button>
-            </form>
+          <h1 id="login-header">Log in</h1>
+          <form id="login-form">
+            <input type="text" name="username" id="username-field" class="login-form-field" placeholder="Username">
+            <input type="text" name="email" id="email-field" class="login-form-field" placeholder="Email">
+            <input type="password" name="password" id="password-field" class="login-form-field" placeholder="Password">
+            <button class="submit-button" id="login-form-submit">Log in</button>
+            <div class="redirect-container" id="create-user-container">
+              <p>Har du ikke en bruger endnu? </p>
+              <button class="redirect-button" id="login-form-CreateUser">Opret bruger</button>
+            </div>
+          </form>
         </div>
-        
+    
         <div id="signup-container">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <label for="signup-email">Email:</label>
-                <input type="email" id="signup-email" required>
-                <br>
-                <label for="signup-username">Username:</label>
-                <input type="text" id="signup-username" required>
-                <br>
-                <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" required>
-                <br>
-                <button type="button" onclick="signup()">Sign Up</button>
-            </form>
+          <h1 id="signup-header">Sign up</h1>
+          <form id="signup-form">
+            <input type="text" name="username" id="username-field" class="signup-form-field" placeholder="Username">
+            <input type="text" name="email" id="email-field" class="signup-form-field" placeholder="Email">
+            <input type="password" name="password" id="password-field" class="signup-form-field" placeholder="Password">
+            <input type="text" name="phonenumber" id="phonenumber-field" class="signup-form-field" placeholder="Phone Number">
+            
+            <label for="favoritejuice">Favorite Juice:</label>
+            <select name="favoritejuice" id="favoritejuice-field" class="signup-form-field">
+              <option value="apple">Apple</option>
+              <option value="orange">Orange</option>
+              <option value="grape">Grape</option>
+            </select>
+            
+            <label for="favoritecoffee">Favorite Coffee:</label>
+            <select name="favoritecoffee" id="favoritecoffee-field" class="signup-form-field">
+              <option value="latte">Latte</option>
+              <option value="cappuccino">Cappuccino</option>
+              <option value="espresso">Espresso</option>
+            </select>
+            
+            <label for="favoritesandwich">Favorite Sandwich:</label>
+            <select name="favoritesandwich" id="favoritesandwich-field" class="signup-form-field">
+              <option value="ham">Ham</option>
+              <option value="turkey">Turkey</option>
+              <option value="veggie">Veggie</option>
+            </select>
+            
+            <button class="submit-button" id="signup-form-submit">Sign up</button>
+          </form>
         </div>
-        
-        <div id="user-actions" style="display: none;">
-            <h2>Welcome, <span id="user-display"></span>!</h2>
-            <button onclick="logout()">Log Out</button>
-            <br>
-            <button onclick="deleteAccount()">Delete Account</button>
-        </div>
-    </div>
+    
+      </div>    
     <script src="../app.js"></script>
     <script src="scripts/login.js"></script>
 </body>

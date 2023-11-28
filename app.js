@@ -1,8 +1,14 @@
 const express = require('express');
 const app = express();
 const port = 2000;
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.static('public'));
+
+app.get('/alive', async (req, res) => {
+  res.status(200).send('It is alive!');
+});
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
@@ -40,10 +46,6 @@ app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
-const authenticate = require("./src/routes/authenticateRoute.js")
+const loginRoute = require('./src/routes/loginRoute.js')
 
-app.use("/authenticate", authenticate)
-
-app.use("/create", authenticate)
-
-app.use("/delete", authenticate)
+app.use("/login", loginRoute)
