@@ -1,126 +1,87 @@
-function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-}
+// login.js
 
-function getCookie(name) {
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const cookies = decodedCookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].trim();
-        if (cookie.startsWith(name + '=')) {
-            return cookie.substring(name.length + 1);
-        }
-    }
-    return '';
-}
-
-function clearCookie(name) {
-    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
-}
-
-function login() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const username = document.getElementById('login-username').value;
-
-    const userData = {
-        email: email,
-        password: password,
-        username: username
-    };
-
-    // Use AJAX to send authentication request to the server
-    fetch('/authenticate', {
-        method: 'POST',
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+  
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+  
+      const username = document.getElementById("username-field").value;
+      const password = document.getElementById("password-field").value;
+  
+      // Send a request to the server to validate the login credentials
+      fetch("/login/login", {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userData: userData })
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            const displayName = username || email;
-            document.getElementById('user-display').innerText = displayName;
-            showUserActions();
-
-            // Set a cookie upon successful login
-            setCookie('user', displayName, 1); // Expires in 1 day
-        } else {
-            alert('Authentication failed. Please check your credentials.');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-    
-    function signup() {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const username = document.getElementById('signup-username').value;
-    
-        const userData = {
-            email: email,
-            password: password,
-            username: username
-        };
-    
-        // Use AJAX to send user creation request to the server
-        fetch('/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userData: userData })
+        body: JSON.stringify({ username, password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the response from the server
+          if (data) {
+            // Login successful
+            console.log("Login successful");
+            // Set a cookie for the user
+            setCookie("user_id", data.UserID, 7); // Adjust the cookie expiration as needed
+          } else {
+            // Login failed
+            console.log("Login failed");
+          }
         })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                document.getElementById('user-display').innerText = username || email;
-                showUserActions();
-            } else {
-                alert('User creation failed. Please try again.');
-            }
+        .catch((error) => console.error("Error:", error));
+    });
+  
+    signupForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+  
+      const username = document.getElementById("username-field").value;
+      const email = document.getElementById("email-field").value;
+      const password = document.getElementById("password-field").value;
+      const phonenumber = document.getElementById("phonenumber-field").value;
+      const favoriteJuice = document.getElementById("favoritejuice-field").value;
+      const favoriteCoffee = document.getElementById("favoritecoffee-field").value;
+      const favoriteSandwich = document.getElementById("favoritesandwich-field").value;
+  
+      // Send a request to the server to create a new user
+      fetch("/login/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          phonenumber,
+          favoriteJuice,
+          favoriteCoffee,
+          favoriteSandwich,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Handle the response from the server
+          if (data) {
+            // Signup successful
+            console.log("Signup successful");
+            // Set a cookie for the user
+            setCookie("user_id", data.UserID, 7); // Adjust the cookie expiration as needed
+          } else {
+            // Signup failed
+            console.log("Signup failed");
+          }
         })
-        .catch(error => console.error('Error:', error));
+        .catch((error) => console.error("Error:", error));
+    });
+  
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + days);
+      const cookie = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+      document.cookie = cookie;
     }
-    
-    function logout() {
-        // Clear the user cookie
-        clearCookie('user');
-        // Implement other logout logic here (e.g., clear session data)
-        hideUserActions();
-    }
-    
-    function deleteAccount() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const username = document.getElementById('username').value;
-    
-        const userData = {
-            email: email,
-            password: password,
-            username: username
-        };
-    
-        // Use AJAX to send user deletion request to the server
-        fetch('/delete', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userData: userData })
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                alert('Account deleted!');
-                hideUserActions();
-            } else {
-                alert('Account deletion failed. Please try again.');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    };
+  });
