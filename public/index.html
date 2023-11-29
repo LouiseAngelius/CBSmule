@@ -23,22 +23,15 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-    // When the DOM is ready
-
-    // Replace 'http://localhost:your_port/' with the actual URL of your backend server
-    const backendUrl = 'http://138.68.164.181';
-
-    // Axios GET request example
-    axios.get(backendUrl)
-        .then(function (response) {
-            // Handle the successful response here
-            console.log('Success:', response.data);
-        })
-        .catch(function (error) {
-            // Handle errors here
-            console.error('Error:', error);
-        });
-});
+      const axios = require('axios');
+      axios.get('http://138.68.164.181')
+      .then(response => {
+        console.log('Serveren svarede:', response.data);
+      })
+      .catch(error => {
+        console.error('Der opstod en fejl:', error);
+      });
+    });
   </script>
 </body>
 </html>
