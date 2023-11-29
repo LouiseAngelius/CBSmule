@@ -2,9 +2,11 @@ const express = require('express');
 const app = express();
 const port = 2000;
 const cors = require('cors');
+// path modul, så path join
 
 app.use(cors());
-app.use(express.static('public'));
+//app.use(express.static('public'));
+app.use('/', express.static('public'));
 app.use(express.json());
 
 app.get('/alive', async (req, res) => {
