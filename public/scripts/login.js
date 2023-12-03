@@ -3,12 +3,21 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("login-form");
     const signupForm = document.getElementById("signup-form");
+
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + days);
+      const cookie = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+      document.cookie = cookie;
+    }
   
     loginForm.addEventListener("submit", function (event) {
       event.preventDefault();
   
       const username = document.getElementById("username-field").value;
       const password = document.getElementById("password-field").value;
+      const email = document.getElementById("email-field").value;
   
       // Send a request to the server to validate the login credentials
       fetch("/login/login", {
@@ -16,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, email }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -37,9 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
     signupForm.addEventListener("submit", function (event) {
       event.preventDefault();
   
-      const username = document.getElementById("username-field").value;
-      const email = document.getElementById("email-field").value;
-      const password = document.getElementById("password-field").value;
+      const username = document.getElementById("username-signup-field").value;
+      const email = document.getElementById("email-signup-field").value;
+      const password = document.getElementById("password-signup-field").value;
       const phonenumber = document.getElementById("phonenumber-field").value;
       const favoriteJuice = document.getElementById("favoritejuice-field").value;
       const favoriteCoffee = document.getElementById("favoritecoffee-field").value;
@@ -76,12 +85,4 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => console.error("Error:", error));
     });
-  
-    // Function to set a cookie
-    function setCookie(name, value, days) {
-      const expirationDate = new Date();
-      expirationDate.setDate(expirationDate.getDate() + days);
-      const cookie = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-      document.cookie = cookie;
-    }
   });

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 2000;
 const cors = require('cors');
-// path modul, så path join
+const path = require('path');
 
 app.use(cors());
 //app.use(express.static('public'));
@@ -14,41 +14,68 @@ app.get('/alive', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
-app.get('/style.css', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/style.css'));
+  res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
-//app.get('/', (reqa, res) => {
-//  res.sendFile(__dirname + '/public/style.css');
-//});
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/index.html'));
+});
+
+app.get('/styles.css', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/styles.css'));
+});
 
 app.get('/chat', (req, res) => {
-  res.sendFile(__dirname + '/public/chat.html');
+  res.sendFile(path.join(__dirname, '/public/chat.html'));
+});
+
+app.get('/chat.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/chat.js'));
 });
 
 app.get('/events', (req, res) => {
-  res.sendFile(__dirname + '/public/events.html');
+  res.sendFile(path.join(__dirname, '/public/events.html'));
+});
+
+app.get('/events.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/events.js'));
 });
 
 app.get('/friends', (req, res) => {
-  res.sendFile(__dirname + '/public/friends.html');
+  res.sendFile(path.join(__dirname, '/public/friends.html'));
+});
+
+app.get('/friends.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/friends.js'));
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/public/login.html');
+  res.sendFile(path.join(__dirname, '/public/login.html'));
+});
+
+app.get('/login/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/login.html'));
+});
+
+app.get('/login/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/login.html'));
+});
+
+app.get('/login.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/login.js'));
 });
 
 app.get('/news', (req, res) => {
-  res.sendFile(__dirname + '/public/news.html');
+  res.sendFile(path.join(__dirname, '/public/news.html'));
 });
 
 app.get('/pictures', (req, res) => {
-  res.sendFile(__dirname + '/public/pictures.html');
+  res.sendFile(path.join(__dirname, '/public/pictures.html'));
 });
 
-
+app.get('/pictures.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/pictures.js'));
+});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
@@ -56,6 +83,6 @@ app.listen(port, () => {
 
 const loginRoute = require('./src/routes/loginRoute.js')
 
-app.use("/login", loginRoute)
+app.use("/login/login", loginRoute)
 
-app.use("/signup", loginRoute)
+app.use("/login/signup", loginRoute)

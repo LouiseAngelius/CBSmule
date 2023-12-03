@@ -45,10 +45,35 @@ body {
   }
 
   .submit-button {
-    background-color: #af4c91;
+    background-color: rgb(255, 192, 234);
     color: #fff;
     padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
   }
+  ul {
+    list-style-type: none;
+    padding: 0;
+    background-color: rgb(255, 192, 234);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+}
+
+ul li ul {
+    margin-top: 5px;
+    padding-left: 20px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul li ul li {
+    margin-bottom: 5px;
+}

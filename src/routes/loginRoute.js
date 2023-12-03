@@ -5,31 +5,6 @@
 const express = require('express');
 const router = express.Router();
 const { executeSQL } = require('../db/executesql.js');
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-
-// Function to generate a random initialization vector
-const generateIV = () => {
-  return crypto.randomBytes(16);
-};
-
-// Function to encrypt data using AES-GCM
-const encryptData = (data, key, iv) => {
-  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-  let encryptedData = cipher.update(data, 'utf-8', 'hex');
-  encryptedData += cipher.final('hex');
-  const tag = cipher.getAuthTag();
-  return { encryptedData, tag };
-};
-
-// Function to decrypt data using AES-GCM
-const decryptData = (encryptedData, key, iv, tag) => {
-  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-  decipher.setAuthTag(tag);
-  let decryptedData = decipher.update(encryptedData, 'hex', 'utf-8');
-  decryptedData += decipher.final('utf-8');
-  return decryptedData;
-};
 
 router.get('/alive', async (req, res) => {
   res.send('Hello from users!');
@@ -50,7 +25,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Check login
-router.post('/login', async (req, res) => {
+router.post('/login/login', async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let query = `SELECT * FROM dbo.Users WHERE Username = '${username}'`;
@@ -59,97 +34,58 @@ router.post('/login', async (req, res) => {
     const response = await executeSQL(query);
     let user = response[0];
 
-    if (user !== undefined) {
-      const isPasswordMatch = await bcrypt.compare(password, user.Password);
-
-      if (isPasswordMatch) {
+    if (user) {
+      if (password === user.Password) {
         res.status(200).send({
           UserID: user.UserID,
           Username: user.Username,
           Email: user.Email, // Include email in the response
         });
       } else {
-        res.status(400).send(req.body);
+        res.status(401).send("Invalid credentials");
       }
     } else {
-      res.status(400).send(req.body);
+      res.status(404).send("User not found");
     }
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-// Create user with symmetric encryption for phone number and email
-router.post('/signup', async (req, res) => {
+// Create user
+router.post('/login/signup', async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let email = req.body.email;
-  let phonenumber = req.body.phonenumber;
+  let phoneNumber = req.body.phoneNumber;
   let favoriteJuice = req.body.favoriteJuice;
   let favoriteCoffee = req.body.favoriteCoffee;
   let favoriteSandwich = req.body.favoriteSandwich;
 
-  // Hash the password with a salt (using 2 rounds in this example)
-  const saltRounds = 2;
+  let query = `INSERT INTO dbo.Users (Username, Password, Email, PhoneNumber, FavoriteJuice, FavoriteCoffee, FavoriteSandwich) 
+               VALUES ('${username}', '${password}', '${email}', '${phoneNumber}', '${favoriteJuice}', '${favoriteCoffee}', '${favoriteSandwich}')`;
+
   try {
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Generate a random key for symmetric encryption
-    const symmetricKey = crypto.randomBytes(32);
-
-    // Generate a random initialization vector (IV)
-    const iv = generateIV();
-
-    // Encrypt phone number and email
-    const encryptedPhoneNumber = encryptData(phonenumber, symmetricKey, iv);
-    const encryptedEmail = encryptData(email, symmetricKey, iv);
-
-    let query = `INSERT INTO dbo.Users (Username, Password, EncryptedEmail, EncryptedPhoneNumber, IV, FavoriteJuice, FavoriteCoffee, FavoriteSandwich) OUTPUT INSERTED.UserID VALUES ('${username}', '${hashedPassword}', '${encryptedEmail.encryptedData}', '${encryptedPhoneNumber.encryptedData}', '${iv.toString('hex')}', '${favoriteJuice}', '${favoriteCoffee}', '${favoriteSandwich}')`;
-
+    console.log("Executing query:", query); // Log the SQL query
     const response = await executeSQL(query);
     const item = response[0];
-    if (!!item && !!item.UserID) {
-      res.status(200).send({
+
+    if (item && item.UserID) {
+      res.status(201).send({
         UserID: item.UserID,
         Username: username,
-        Password: hashedPassword,
-        EncryptedEmail: encryptedEmail.encryptedData,
-        EncryptedPhoneNumber: encryptedPhoneNumber.encryptedData,
-        IV: iv.toString('hex'),
+        Email: email,
+        PhoneNumber: phoneNumber,
         FavoriteJuice: favoriteJuice,
         FavoriteCoffee: favoriteCoffee,
         FavoriteSandwich: favoriteSandwich,
       });
     } else {
-      res.status(400).send("Error creating user information");
+      console.error("Failed to create user:", response);
+      res.status(500).send("Failed to create user");
     }
   } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-// Check login
-router.post('/login', async (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-  let query = `SELECT * FROM dbo.Users WHERE Username = '${username}'`;
-
-  try {
-    const response = await executeSQL(query);
-    let user = response[0];
-
-    if (user !== undefined) {
-      const isPasswordMatch = await bcrypt.compare(password, user.Password);
-
-      if (isPasswordMatch) {
-        res.status(200).send(user);
-      } else {
-        res.status(400).send(req.body);
-      }
-    } else {
-      res.status(400).send(req.body);
-    }
-  } catch (error) {
+    console.error("Error creating user:", error);
     res.status(500).send(error.message);
   }
 });
