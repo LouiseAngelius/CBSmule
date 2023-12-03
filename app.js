@@ -41,6 +41,10 @@ app.get('/events.js', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/scripts/events.js'));
 });
 
+app.get('/events/sms', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/scripts/events.js'));
+});
+
 app.get('/friends', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/friends.html'));
 });
@@ -86,3 +90,15 @@ const loginRoute = require('./src/routes/loginRoute.js')
 app.use("/login/login", loginRoute)
 
 app.use("/login/signup", loginRoute)
+
+//Twilio herunder
+const { MessagingResponse } = require('twilio').twiml;
+
+// https://www.twilio.com/docs/messaging/tutorials/how-to-receive-and-reply/node-js
+app.post('/events/sms', (req, res) => {
+  const twiml = new MessagingResponse();
+
+  twiml.message('CBSmule har modtaget din besked. Vi vender tilbage hurtigst muligt.');
+
+  res.type('text/xml').send(twiml.toString());
+});
