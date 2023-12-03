@@ -1,5 +1,5 @@
     const accountSid = 'AC6f076552392f4a86b609304360052d37';
-    const authToken = 'd5f72b0ab27d364d1d93c5f4d6d5973d';
+    const authToken = '76b329bc4547830ad59e65f7d3a7a356';
     const twilioNumber = '+19015319722';
     const recipientNumber = '+4542450514';
     const twilio = require('twilio');
