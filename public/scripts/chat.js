@@ -1,21 +1,22 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var socket = io();
-  var form = document.getElementById("form");
-  var input = document.getElementById("input");
-  var messages = document.getElementById("messages");
+import { io } from 'socket.io-client';
+document.addEventListener('DOMContentLoaded', () => {
+  const socket = io(); // This assumes the Socket.IO script is loaded and available
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    if (input.value) {
-      socket.emit("chat message", input.value);
-      input.value = "";
-    }
+  const form = document.querySelector('form');
+  const input = document.querySelector('#input');
+  const messages = document.querySelector('#messages');
+
+  form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      if (input.value) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+      }
   });
 
-  socket.on("chat message", function (msg) {
-    var item = document.createElement("li");
-    item.textContent = msg;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
+  socket.on('chat message', function(msg){
+      const li = document.createElement('li');
+      li.textContent = msg;
+      messages.appendChild(li);
   });
 });

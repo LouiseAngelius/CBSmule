@@ -4,6 +4,23 @@ const port = 2000;
 const cors = require('cors');
 const path = require('path');
 
+const http = require('http');
+const socketIo = require('socket.io');
+const server = http.createServer(app);
+const io = socketIo(server);
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+});
+
 app.use(cors());
 //app.use(express.static('public'));
 app.use('/', express.static('public'));
@@ -57,11 +74,12 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/login.html'));
 });
 
-app.get('/login/login', (req, res) => {
+app.post('/login/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/login.html'));
 });
 
-app.get('/login/signup', (req, res) => {
+app.post('/login/signup', (req, res) => {
+  console.log('Received POST request for /login/signup');
   res.sendFile(path.join(__dirname, '/public/login.html'));
 });
 
@@ -87,9 +105,7 @@ app.listen(port, () => {
 
 const loginRoute = require('./src/routes/loginRoute.js')
 
-app.use("/login/login", loginRoute)
-
-app.use("/login/signup", loginRoute)
+app.use("/login", loginRoute)
 
 //Twilio herunder
 const { MessagingResponse } = require('twilio').twiml;

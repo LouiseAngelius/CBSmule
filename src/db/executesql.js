@@ -19,7 +19,7 @@ const executeSQL = (sql) => {
                 connection.execSql(request)
 
                 let counter = 0;
-                response = {}
+                let response = {}
 
                 request.on('row', function (columns) {
                     response[counter] = {}

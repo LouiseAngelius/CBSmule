@@ -1,10 +1,14 @@
 // users.js
-// npm i bcrypt
-// npm i crypto
+// npm i bcrypt, crypto, cors, express, tedious
 
 const express = require('express');
 const router = express.Router();
 const { executeSQL } = require('../db/executesql.js');
+const cors = require('cors');
+const { TYPES } = require('tedious');
+const bcrypt = require('bcrypt');
+
+router.use(cors());
 
 router.get('/alive', async (req, res) => {
   res.send('Hello from users!');
@@ -28,18 +32,24 @@ router.get('/:id', async (req, res) => {
 router.post('/login/login', async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
-  let query = `SELECT * FROM dbo.Users WHERE Username = '${username}'`;
+  let query = `SELECT * FROM dbo.Users WHERE UserName = @username`;
 
   try {
-    const response = await executeSQL(query);
-    let user = response[0];
+    // Retrieve user data from the database
+    const userParams = [{ name: 'username', type: TYPES.VarChar, value: username }];
+    const response = await executeSQL(query, userParams);
+    const user = response[0];
 
     if (user) {
-      if (password === user.Password) {
+      // Compare the provided password with the hashed password from the database
+      const passwordMatch = await bcrypt.compare(password, user.Password);
+
+      if (passwordMatch) {
         res.status(200).send({
           UserID: user.UserID,
-          Username: user.Username,
-          Email: user.Email, // Include email in the response
+          Username: user.UserName,
+          Email: user.Email,
+          PhoneNumber: user.PhoneNumber,
         });
       } else {
         res.status(401).send("Invalid credentials");
@@ -62,28 +72,61 @@ router.post('/login/signup', async (req, res) => {
   let favoriteCoffee = req.body.favoriteCoffee;
   let favoriteSandwich = req.body.favoriteSandwich;
 
-  let query = `INSERT INTO dbo.Users (Username, Password, Email, PhoneNumber, FavoriteJuice, FavoriteCoffee, FavoriteSandwich) 
-               VALUES ('${username}', '${password}', '${email}', '${phoneNumber}', '${favoriteJuice}', '${favoriteCoffee}', '${favoriteSandwich}')`;
-
   try {
-    console.log("Executing query:", query); // Log the SQL query
-    const response = await executeSQL(query);
-    const item = response[0];
+    // Hash password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (item && item.UserID) {
-      res.status(201).send({
-        UserID: item.UserID,
-        Username: username,
-        Email: email,
-        PhoneNumber: phoneNumber,
-        FavoriteJuice: favoriteJuice,
-        FavoriteCoffee: favoriteCoffee,
-        FavoriteSandwich: favoriteSandwich,
-      });
-    } else {
-      console.error("Failed to create user:", response);
-      res.status(500).send("Failed to create user");
-    }
+    // Insert user data into dbo.Users
+    let userQuery = `INSERT INTO dbo.Users (UserName, Password, Email, PhoneNumber) 
+                     VALUES (@username, @password, @email, @phoneNumber)`;
+
+    const userParams = [
+      { name: 'username', type: TYPES.VarChar, value: username },
+      { name: 'password', type: TYPES.VarChar, value: hashedPassword },
+      { name: 'email', type: TYPES.VarChar, value: email },
+      { name: 'phoneNumber', type: TYPES.VarChar, value: phoneNumber },
+    ];
+
+    await executeSQL(userQuery, userParams);
+
+    // Get the UserID of the newly inserted user
+    let getUserIdQuery = `SELECT UserID FROM dbo.Users WHERE UserName = @username`;
+    const getUserIdParams = [{ name: 'username', type: TYPES.VarChar, value: username }];
+
+    const { UserID } = (await executeSQL(getUserIdQuery, getUserIdParams))[0];
+
+    // Insert favorite coffee, juice, and sandwich into dbo.Favorites
+    let favoritesQuery = `INSERT INTO dbo.Favorites (Juice, Coffee, Sandwich) 
+                          VALUES (@favoriteJuice, @favoriteCoffee, @favoriteSandwich)`;
+
+    const favoritesParams = [
+      { name: 'favoriteJuice', type: TYPES.VarChar, value: favoriteJuice },
+      { name: 'favoriteCoffee', type: TYPES.VarChar, value: favoriteCoffee },
+      { name: 'favoriteSandwich', type: TYPES.VarChar, value: favoriteSandwich },
+    ];
+
+    const { FavoritesID } = (await executeSQL(favoritesQuery, favoritesParams))[0];
+
+    // Insert UserID and FavoritesID into dbo.UserFavorites
+    let userFavoritesQuery = `INSERT INTO dbo.UserFavorites (UserID, FavoritesID) 
+                              VALUES (@UserID, @FavoritesID)`;
+
+    const userFavoritesParams = [
+      { name: 'UserID', type: TYPES.Int, value: UserID },
+      { name: 'FavoritesID', type: TYPES.Int, value: FavoritesID },
+    ];
+
+    await executeSQL(userFavoritesQuery, userFavoritesParams);
+
+    res.status(201).send({
+      UserID,
+      Username: username,
+      Email: email,
+      PhoneNumber: phoneNumber,
+      FavoriteJuice: favoriteJuice,
+      FavoriteCoffee: favoriteCoffee,
+      FavoriteSandwich: favoriteSandwich,
+    });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).send(error.message);
