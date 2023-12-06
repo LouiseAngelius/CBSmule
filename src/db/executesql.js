@@ -2,9 +2,9 @@ let Connection = require('tedious').Connection;
 let Request = require('tedious').Request;
 const config = require("./config.json");
 
-const executeSQL = (sql) => {
+const executeSQL = (sql, userParams = []) => {
     return new Promise((resolve, reject) => {
-        let connection = new Connection(config)
+        let connection = new Connection(config);
 
         connection.on('connect', function (err) {
             if (err) {
@@ -14,28 +14,33 @@ const executeSQL = (sql) => {
                     if (err) {
                         reject(err);
                     }
-                })
-        
-                connection.execSql(request)
+                });
+
+                // Add user parameters to the request
+                userParams.forEach(param => {
+                    request.addParameter(param.name, param.type, param.value);
+                });
+
+                connection.execSql(request);
 
                 let counter = 0;
-                let response = {}
+                let response = {};
 
                 request.on('row', function (columns) {
-                    response[counter] = {}
+                    response[counter] = {};
                     columns.forEach(function (column) {
-                        response[counter][column.metadata.colName] = column.value
+                        response[counter][column.metadata.colName] = column.value;
                     });
-                    counter += 1
+                    counter += 1;
                 });
 
                 request.on('requestCompleted', () => {
-                    resolve(response)
+                    resolve(response);
                 });
             }
         });
 
-        connection.connect()
+        connection.connect();
     });
 }
 

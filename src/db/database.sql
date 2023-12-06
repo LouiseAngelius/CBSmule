@@ -1,20 +1,20 @@
 CREATE TABLE Users (
-    UserID INT PRIMARY KEY,
-    UserName VARCHAR(50),
-    Email VARCHAR(50),
-    Password VARCHAR(50),
-    PhoneNumber VARCHAR(15)  -- Assuming it includes the plus sign for country codes
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
+    UserName VARCHAR(100),
+    Email VARCHAR(100),
+    Password VARCHAR(100),
+    PhoneNumber VARCHAR(20)
 );
 
 CREATE TABLE Favorites (
-    FavoritesID INT PRIMARY KEY,
+    FavoritesID INT IDENTITY(1,1) PRIMARY KEY,
     Juice VARCHAR(50),
     Coffee VARCHAR(50),
     Sandwich VARCHAR(50)
 );
 
 CREATE TABLE UserFavorites (
-    UserFavoritesID INT PRIMARY KEY,
+    UserFavoritesID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT,
     FavoritesID INT,
     FOREIGN KEY (UserID) REFERENCES Users(UserID),

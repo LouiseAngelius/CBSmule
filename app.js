@@ -78,10 +78,10 @@ app.post('/login/login', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/login.html'));
 });
 
-app.post('/login/signup', (req, res) => {
+/*app.post('/login/signup', (req, res) => {
   console.log('Received POST request for /login/signup');
   res.sendFile(path.join(__dirname, '/public/login.html'));
-});
+});*/
 
 app.get('/login.js', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/scripts/login.js'));
