@@ -1,4 +1,4 @@
-import { io } from 'socket.io-client';
+//import { io } from 'socket.io-client';
 document.addEventListener('DOMContentLoaded', () => {
   const socket = io(); // This assumes the Socket.IO script is loaded and available
 
