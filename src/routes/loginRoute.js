@@ -69,90 +69,41 @@ router.post('/signup', async (req, res) => {
   let password = req.body.password;
   let email = req.body.email;
   let phoneNumber = req.body.phoneNumber;
-  let favoriteJuice = req.body.favoriteJuice;
-  let favoriteCoffee = req.body.favoriteCoffee;
-  let favoriteSandwich = req.body.favoriteSandwich;
+  let juice = req.body.juice;
+  let coffee = req.body.coffee;
+  let sandwich = req.body.sandwich;
 
     try {
       // Hash password before storing it
       const hashedPassword = await bcrypt.hash(password, 10);
   
       // Insert user data into dbo.Users
-      let userQuery = `
-        INSERT INTO dbo.Users (UserName, Password, Email, PhoneNumber) 
-        VALUES (@username, @password, @email, @phoneNumber);
-      `;
+      let userQuery = `INSERT INTO dbo.Users (UserName, Password, Email, PhoneNumber, Juice, Coffee, Sandwich) 
+      VALUES (@username, @password, @email, @phoneNumber, @juice, @coffee, @sandwich);`;
   
       const userParams = [
         { name: 'username', type: TYPES.VarChar, value: username },
         { name: 'password', type: TYPES.VarChar, value: hashedPassword },
         { name: 'email', type: TYPES.VarChar, value: email },
         { name: 'phoneNumber', type: TYPES.VarChar, value: phoneNumber },
+        { name: 'juice', type: TYPES.VarChar, value: juice },
+        { name: 'coffee', type: TYPES.VarChar, value: coffee },
+        { name: 'sandwich', type: TYPES.VarChar, value: sandwich },
       ];
   
       // Execute the user insertion query
       await executeSQL(userQuery, userParams);
-  
-      // Retrieve the generated UserID
-      let getUserIdQuery = `SELECT SCOPE_IDENTITY() AS UserID`;
-      const result = await executeSQL(getUserIdQuery);
-  
-      if (result && result.length > 0 && result[0].UserID) {
-        const UserID = result[0].UserID;
-  
-        // Insert favorite coffee, juice, and sandwich into dbo.Favorites
-        let favoritesQuery = `
-          INSERT INTO dbo.Favorites (Juice, Coffee, Sandwich) 
-          VALUES (@favoriteJuice, @favoriteCoffee, @favoriteSandwich);
-        `;
-  
-        const favoritesParams = [
-          { name: 'favoriteJuice', type: TYPES.VarChar, value: favoriteJuice },
-          { name: 'favoriteCoffee', type: TYPES.VarChar, value: favoriteCoffee },
-          { name: 'favoriteSandwich', type: TYPES.VarChar, value: favoriteSandwich },
-        ];
-  
-        // Execute the favorites insertion query
-        await executeSQL(favoritesQuery, favoritesParams);
-  
-        // Retrieve the generated FavoritesID
-        let getFavoritesIdQuery = `SELECT SCOPE_IDENTITY() AS FavoritesID`;
-        const favoritesResult = await executeSQL(getFavoritesIdQuery);
-  
-        if (favoritesResult && favoritesResult.length > 0 && favoritesResult[0].FavoritesID) {
-          const FavoritesID = favoritesResult[0].FavoritesID;
-  
-          // Insert UserID and FavoritesID into dbo.UserFavorites
-          let userFavoritesQuery = `
-            INSERT INTO dbo.UserFavorites (UserID, FavoritesID) 
-            VALUES (@UserID, @FavoritesID);
-          `;
-  
-          const userFavoritesParams = [
-            { name: 'UserID', type: TYPES.Int, value: UserID },
-            { name: 'FavoritesID', type: TYPES.Int, value: FavoritesID },
-          ];
-  
-          // Execute the user favorites insertion query
-          await executeSQL(userFavoritesQuery, userFavoritesParams);
-  
+
           res.status(201).send({
             UserID,
             Username: username,
             Email: email,
             PhoneNumber: phoneNumber,
-            FavoriteJuice: favoriteJuice,
-            FavoriteCoffee: favoriteCoffee,
-            FavoriteSandwich: favoriteSandwich,
+            juice: juice,
+            coffee: coffee,
+            sandwich: sandwich,
           });
-        } else {
-          // Handle the case where FavoritesID is not available
-          res.status(500).send("Error creating user: FavoritesID not available.");
-        }
-      } else {
-        // Handle the case where UserID is not available
-        res.status(500).send("Error creating user: UserID not available.");
-      }
+
     } catch (error) {
       console.error("Error creating user:", error);
       res.status(500).send(error.message);
